@@ -1,0 +1,67 @@
+{
+	"folders": [
+	  {
+		"path": "."
+	  }
+	],
+	"settings": {
+	  "svg.preview.background": "transparent",
+	  "compile-hero.disable-compile-files-on-did-save-code": false,
+	  "editor.formatOnSave": true,
+	  "editor.formatOnPaste": true,
+	  "editor.insertSpaces": true,
+	  "editor.detectIndentation": false,
+	  "editor.wordWrapColumn": 100,
+	  "editor.wordWrap": "bounded",
+	  "editor.tabSize": 2,
+	  "[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	  },
+	  "[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	  },
+	  "[vue]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	  },
+	  "[scss]": {
+		"editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
+	  },
+	  "[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	  },
+	  "[editorconfig]": {
+		"editor.defaultFormatter": "EditorConfig.EditorConfig"
+	  },
+	  "[yaml]": {
+		"editor.defaultFormatter": "redhat.vscode-yaml"
+	  },
+	  "[dockerfile]": {
+		"editor.defaultFormatter": "ms-azuretools.vscode-docker"
+	  },
+	  "liveSassCompile.settings.watchOnLaunch": true,
+	  "liveSassCompile.settings.showOutputWindowOn": "None",
+	  "liveSassCompile.settings.formats": [
+		{
+		  "format": "expanded",
+		  "extensionName": ".css",
+		  "savePath": "~/../css"
+		}
+	  ],
+	  "liveSassCompile.settings.autoprefix": []
+	},
+	"extensions": {
+	  "recommendations": [
+		"esbenp.prettier-vscode",
+		"willjleong.nuxt-typescript-snippets",
+		"syler.sass-indented",
+		"glenn2223.live-sass",
+		"sibiraj-s.vscode-scss-formatter",
+		"Vue.volar",
+		"Zignd.html-css-class-completion",
+		"EditorConfig.EditorConfig",
+		"redhat.vscode-yaml",
+		"ms-azuretools.vscode-docker",
+		"formulahendry.auto-rename-tag"
+	  ]
+	}
+  }
