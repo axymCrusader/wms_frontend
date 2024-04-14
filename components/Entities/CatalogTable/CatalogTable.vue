@@ -13,7 +13,7 @@ const catalogs = computed(() => catalogStore.Catalogs);
     title="Каталог оборудования"
     :rows="catalogs"
     :columns="catalogColumns"
-    row-key="equipmentTypeId"
+    row-key="catalogId"
     flat
     sep-rows
   >
