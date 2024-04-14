@@ -1,5 +1,10 @@
+<script setup lang="ts">
+const { info, groups } = $userLMA();
+const { isAuth, logout } = $useAuthorization();
+</script>
+
 <template>
-  <div>
-    <NuxtWelcome />
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
