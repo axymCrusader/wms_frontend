@@ -1,6 +1,18 @@
 export interface Catalog {
   catalogId: string;
-  catalogSupplierName: string;
-  catalogEquipmentName: string;
-  catalogEquipmentTypeName: string;
+  catalogSupplierId: string;
+  catalogEquipmentId: string;
+  catalogPrice: string;
+}
+
+export interface Equipment {
+  equipmentId: string;
+  equipmentName: string;
+  equipmentTypeId: string;
+}
+
+export interface Property {
+  equipmentId: string;
+  equipmentCharacteristicId: string;
+  propertyValue: string;
 }

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useEquipmentTypeStore } from "@/store/EquipmentTypeStore";
-import type { EquipmentType } from "@/utils/types/store/EquipmentTypeTypes";
 import { equipmentTypeColumns } from "./EquipmentTypeTableColums";
 
 const equipmentTypeStore = useEquipmentTypeStore();
-
 const equipmentTypes = computed(() => equipmentTypeStore.EquipmentTypes);
+
+const deleteRow = (id: string) => {
+  equipmentTypeStore.deleteEquipmentType(id);
+}
 </script>
 
 <template>
@@ -19,7 +21,7 @@ const equipmentTypes = computed(() => equipmentTypeStore.EquipmentTypes);
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
-        <q-btn label="Edit" color="primary" />
+        <q-btn label="Удалить" color="red"  @click="deleteRow(props.row.equipmentTypeId)"/>
       </q-td>
     </template>
   </q-table>

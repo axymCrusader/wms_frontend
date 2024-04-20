@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useEquipmentTypeStore } from "@/store/EquipmentTypeStore";
 
-const dialog = ref(false);
 const equipmentType = ref({
   equipmentTypeId: "",
   equipmentTypeName: "",
@@ -9,13 +8,17 @@ const equipmentType = ref({
 
 const equipmentTypeStore = useEquipmentTypeStore();
 
-const onSubmit = async () => {
-  dialog.value = false;
+const addEquipmentType = async () => {
+  equipmentTypeStore.addEquipmentType(equipmentType.value);
+  equipmentType.value = {
+    equipmentTypeId: "",
+    equipmentTypeName: "",
+  }
 };
 </script>
 
 <template>
-  <q-dialog v-model="dialog" persistent>
+  <q-dialog v-model="equipmentTypeStore.equipmentTypeDialogVisible" persistent>
     <q-card style="min-width: 500px">
       <q-card-section class="row items-center q-pb-none text-h6">
         Форма для добавления типа оборудования
@@ -39,7 +42,7 @@ const onSubmit = async () => {
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="закрыть" v-close-popup />
-        <q-btn flat label="сохранить" v-close-popup @click="onSubmit" />
+        <q-btn flat label="сохранить" v-close-popup @click="addEquipmentType" />
       </q-card-actions>
     </q-card>
   </q-dialog>

@@ -1,5 +1,10 @@
+<script setup lang="ts">
+const { isAuth, logout } = $useAuthorization()
+</script>
+
 <template>
-  <h1>dadada</h1>
+  <Authorization>      
+  </Authorization>
 </template>
 
 <style></style>

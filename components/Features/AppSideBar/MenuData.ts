@@ -6,10 +6,6 @@ export const MENU_DATA: MenuItem[] = [
     url: "/Warehouse",
   },
   {
-    name: "Каталог оборудования",
-    url: "/Catalog",
-  },
-  {
     name: "Поставщики",
     url: "/Supplier",
   },
@@ -20,6 +16,10 @@ export const MENU_DATA: MenuItem[] = [
   {
     name: "Характеристики типов",
     url: "/EquipmentCharacteristic",
+  },
+  {
+    name: "Каталог оборудования",
+    url: "/Catalog",
   },
   {
     name: "Потребность в оборудовании",

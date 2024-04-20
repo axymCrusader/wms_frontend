@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const dialog = ref(false);
+import { useEquipmentCharacteristicStore } from "@/store/EquipmentCharacteristicStore";
+const equipmentCharacteristicStore = useEquipmentCharacteristicStore();
 </script>
 
 <template>
@@ -7,8 +8,10 @@ const dialog = ref(false);
     color="white"
     text-color="black"
     label="Добавить характеристику типа"
-    @click="dialog = true"
+    @click="
+      equipmentCharacteristicStore.equipmentCharacteristicsDialogVisible = true
+    "
   />
-  <FeaturesEquipmentCharacteristicsDialog v-model="dialog" />
+  <FeaturesEquipmentCharacteristicsDialog />
   <EntitiesEquipmentCharacteristicTable />
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const dialog = ref(false);
+import { useWarehouseStore } from "@/store/WareHouseStore";
+const warehouseStore = useWarehouseStore();
 </script>
 
 <template>
@@ -7,8 +8,8 @@ const dialog = ref(false);
     color="white"
     text-color="black"
     label="Добавить склад"
-    @click="dialog = true"
+    @click="warehouseStore.wareHouseDialogVisible = true"
   />
-  <FeaturesWareHouseDialog v-model="dialog" />
+  <FeaturesWareHouseDialog />
   <EntitiesWareHouseTableWarehouseTable />
 </template>

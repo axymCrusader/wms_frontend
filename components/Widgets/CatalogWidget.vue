@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const dialog = ref(false);
+import { useCatalogStore } from "@/store/CatalogStore";
+const catalogStore = useCatalogStore();
 </script>
 
 <template>
@@ -7,8 +8,8 @@ const dialog = ref(false);
     color="white"
     text-color="black"
     label="Добавить каталог"
-    @click="dialog = true"
+    @click="catalogStore.catalogDialogVisible = true"
   />
-  <FeaturesCatalogDialog v-model="dialog" />
+  <FeaturesCatalogDialog />
   <EntitiesCatalogTable />
 </template>

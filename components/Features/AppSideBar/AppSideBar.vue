@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MENU_DATA } from "./MenuData";
+const { isAuth, logout } = $useAuthorization()
 </script>
 
 <style scoped></style>

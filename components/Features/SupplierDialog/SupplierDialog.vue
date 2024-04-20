@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useSupplierStore } from "@/store/SupplierStore";
 
-const dialog = ref(false);
 const supplier = ref({
   supplierId: "",
   supplierName: "",
@@ -13,13 +12,21 @@ const supplier = ref({
 
 const supplierStore = useSupplierStore();
 
-const onSubmit = async () => {
-  dialog.value = false;
+const addSupplier = async () => {
+  supplierStore.addSupplier(supplier.value);
+  supplier.value = {
+    supplierId: "",
+    supplierName: "",
+    supplierInn: "",
+    supplierBic: "",
+    supplierContactPerson: "",
+    supplierPhone: "",
+  }
 };
 </script>
 
 <template>
-  <q-dialog v-model="dialog" persistent>
+  <q-dialog v-model="supplierStore.supplierDialogVisible" persistent>
     <q-card style="min-width: 500px">
       <q-card-section class="row items-center q-pb-none text-h6">
         Форма для добавления поставщика
@@ -67,14 +74,14 @@ const onSubmit = async () => {
         <q-input
           outlined
           v-model="supplier.supplierPhone"
-          mask="+#(###) ### - ####"
+          mask="+7(###) ### - ####"
           label="Телефон"
         />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="закрыть" v-close-popup />
-        <q-btn flat label="сохранить" v-close-popup @click="onSubmit" />
+        <q-btn flat label="сохранить" v-close-popup @click="addSupplier" />
       </q-card-actions>
     </q-card>
   </q-dialog>

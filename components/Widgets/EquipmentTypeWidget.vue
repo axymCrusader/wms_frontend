@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const dialog = ref(false);
+import { useEquipmentTypeStore } from "@/store/EquipmentTypeStore";
+const equipmentTypeStore = useEquipmentTypeStore();
 </script>
 
 <template>
@@ -7,8 +8,8 @@ const dialog = ref(false);
     color="white"
     text-color="black"
     label="Добавить тип оборудования"
-    @click="dialog = true"
+    @click="equipmentTypeStore.equipmentTypeDialogVisible = true"
   />
-  <FeaturesEquipmentTypeDialog v-model="dialog" />
+  <FeaturesEquipmentTypeDialog />
   <EntitiesEquipmentTypeTable />
 </template>

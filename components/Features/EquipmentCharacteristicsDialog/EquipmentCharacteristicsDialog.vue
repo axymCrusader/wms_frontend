@@ -1,60 +1,41 @@
 <script setup lang="ts">
 import { useEquipmentCharacteristicStore } from "@/store/EquipmentCharacteristicStore";
+import { useEquipmentTypeStore } from "@/store/EquipmentTypeStore";
 
-const dialog = ref(false);
+const equipmentCharacteristicStore = useEquipmentCharacteristicStore();
+const equipmentTypeStore = useEquipmentTypeStore();
+
 const equipmentCharacteristic = ref({
   equipmentCharacteristicId: "",
   equipmentCharacteristicName: "",
 });
-const equpmentType = ref({
-  equipmentTypeId: "",
-  equipmentTypeName: "",
-});
 
-const stringOptions: string[] = [
-  "Google",
-  "Facebook",
-  "Twitter",
-  "Apple",
-  "Oracle",
-];
-const filterOptions: Ref<string[]> = ref(stringOptions);
+const options = equipmentTypeStore.EquipmentTypes.map(
+  (type: { equipmentTypeId: string; equipmentTypeName: string }) => ({
+    label: type.equipmentTypeName,
+    value: type.equipmentTypeId,
+  })
+);
+const multiple = ref([]);
 
-const createValue = (
-  val: string,
-  done: (val: string, mode?: string) => void
-) => {
-  if (val.length > 0) {
-    if (!stringOptions.includes(val)) {
-      stringOptions.push(val);
-    }
-    done(val, "toggle");
-  }
-};
-
-const filterFn = (val: string, update: (fn: () => void) => void) => {
-  update(() => {
-    if (val === "") {
-      filterOptions.value = stringOptions;
-    } else {
-      const needle = val.toLowerCase();
-      filterOptions.value = stringOptions.filter(
-        (v) => v.toLowerCase().indexOf(needle) > -1
-      );
-    }
-  });
-};
-const model = ref(null);
-
-const equipmentCharacteristicStore = useEquipmentCharacteristicStore();
-
-const onSubmit = async () => {
-  dialog.value = false;
+const addCharacteristic = async () => {
+  equipmentCharacteristicStore.addEquipmentCharacteristic(
+    equipmentCharacteristic.value,
+    multiple.value
+  );
+  equipmentCharacteristic.value = {
+    equipmentCharacteristicId: "",
+    equipmentCharacteristicName: "",
+  };
+  multiple.value = [];
 };
 </script>
 
 <template>
-  <q-dialog v-model="dialog" persistent>
+  <q-dialog
+    v-model="equipmentCharacteristicStore.equipmentCharacteristicsDialogVisible"
+    persistent
+  >
     <q-card style="min-width: 500px">
       <q-card-section class="row items-center q-pb-none text-h6">
         Форма для добавления характеристики типа
@@ -79,22 +60,24 @@ const onSubmit = async () => {
       <div class="q-pa-md">
         <q-select
           filled
-          v-model="model"
-          use-input
-          use-chips
+          v-model="multiple"
           multiple
-          input-debounce="0"
-          @new-value="createValue"
-          :options="filterOptions"
-          @filter="filterFn"
-          label="Типы оборудования"
+          :options="options"
+          option-value="value"
+          option-label="label"
+          label="Тип оборудования"
           style="width: 250px"
         />
       </div>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="закрыть" v-close-popup />
-        <q-btn flat label="сохранить" v-close-popup @click="onSubmit" />
+        <q-btn
+          flat
+          label="сохранить"
+          v-close-popup
+          @click="addCharacteristic"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

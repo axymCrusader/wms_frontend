@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const dialog = ref(false);
+import { useSupplierStore } from "@/store/SupplierStore";
+const supplierStore = useSupplierStore();
 </script>
 
 <template>
@@ -7,8 +8,8 @@ const dialog = ref(false);
     color="white"
     text-color="black"
     label="Добавить поставщика"
-    @click="dialog = true"
+    @click="supplierStore.supplierDialogVisible = true"
   />
-  <FeaturesSupplierDialog v-model="dialog" />
+  <FeaturesSupplierDialog />
   <EntitiesSupplierTable />
 </template>

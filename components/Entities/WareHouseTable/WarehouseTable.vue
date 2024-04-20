@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useWarehouseStore } from "@/store/WareHouseStore";
-import type { WareHouse } from "@/utils/types/store/WareHouseTypes";
 import { wareHouseColumns } from "./WareHouseTableColums";
 
 const warehouseStore = useWarehouseStore();
-
 const warehouses = computed(() => warehouseStore.WareHouses);
+
+const deleteRow = (id: string) => {
+  warehouseStore.deleteWareHouse(id);
+}
 </script>
 
 <template>
@@ -19,7 +21,7 @@ const warehouses = computed(() => warehouseStore.WareHouses);
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
-        <q-btn label="Edit" color="primary" />
+        <q-btn label="Удалить" color="red" @click="deleteRow(props.row.wareHouseId)" />
       </q-td>
     </template>
   </q-table>

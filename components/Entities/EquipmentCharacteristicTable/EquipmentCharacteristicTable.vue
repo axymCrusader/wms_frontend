@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { useEquipmentCharacteristicStore } from "@/store/EquipmentCharacteristicStore";
-import type { EquipmentCharacteristic } from "@/utils/types/store/EquipmentCharacteristicTypes";
 import { equipmentCharacteristicColumns } from "./EquipmentCharacteristicTableColums";
 
 const equipmentCharacteristicStore = useEquipmentCharacteristicStore();
-
-const equipmentCharacteristics = computed(
-  () => equipmentCharacteristicStore.EquipmentCharacteristics
+const CharacteristicsTableData = computed(
+  () => equipmentCharacteristicStore.CharacteristicsTableData
 );
+const deleteRow = (id: string) => {
+  equipmentCharacteristicStore.deleteEquipmentCharacteristic(id);
+};
 </script>
 
 <template>
   <q-table
     title="Характеристики типов"
-    :rows="equipmentCharacteristics"
+    :rows="CharacteristicsTableData"
     :columns="equipmentCharacteristicColumns"
     row-key="equipmentCharacteristicId"
     flat
@@ -21,7 +22,11 @@ const equipmentCharacteristics = computed(
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
-        <q-btn label="Edit" color="primary" />
+        <q-btn
+          label="Удалить"
+          color="red"
+          @click="deleteRow(props.row.equipmentCharacteristicId)"
+        />
       </q-td>
     </template>
   </q-table>

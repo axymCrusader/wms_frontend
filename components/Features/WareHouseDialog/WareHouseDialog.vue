@@ -1,38 +1,45 @@
 <script setup lang="ts">
 import { useWarehouseStore } from "@/store/WareHouseStore";
 
-const dialog = ref(false);
 const warehouse = ref({
-  warehouseId: "",
-  warehouseName: "",
-  warehouseType: "",
-  warehouseAddress: "",
-  warehouseContactPerson: "",
-  warehousePhone: "",
+  wareHouseId: "",
+  wareHouseName: "",
+  wareHouseType: "",
+  wareHouseAddress: "",
+  wareHouseContactPerson: "",
+  wareHousePhone: "",
 });
 
 const warehouseStore = useWarehouseStore();
 
-const onSubmit = async () => {
-  dialog.value = false;
+const addWareHouse = async () => {
+  warehouseStore.addWareHouse(warehouse.value);
+  warehouse.value = {
+    wareHouseId: "",
+    wareHouseName: "",
+    wareHouseType: "",
+    wareHouseAddress: "",
+    wareHouseContactPerson: "",
+    wareHousePhone: "",
+  }
 };
 </script>
 
 <template>
-  <q-dialog v-model="dialog" persistent>
+  <q-dialog v-model="warehouseStore.wareHouseDialogVisible" persistent>
     <q-card style="min-width: 500px">
       <q-card-section class="row items-center q-pb-none text-h6">
         Форма для добавления склада
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-input outlined v-model="warehouse.warehouseId" label="Номер" />
+        <q-input outlined v-model="warehouse.wareHouseId" label="Номер" />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <q-input
           outlined
-          v-model="warehouse.warehouseName"
+          v-model="warehouse.wareHouseName"
           label="Наименование"
         />
       </q-card-section>
@@ -40,20 +47,20 @@ const onSubmit = async () => {
       <q-card-section class="q-pt-none">
         <q-select
           outlined
-          v-model="warehouse.warehouseType"
+          v-model="warehouse.wareHouseType"
           :options="['МТС', 'Склад Торговой точки']"
           label="Тип склада"
         />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-input outlined v-model="warehouse.warehouseAddress" label="Адрес" />
+        <q-input outlined v-model="warehouse.wareHouseAddress" label="Адрес" />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <q-input
           outlined
-          v-model="warehouse.warehouseContactPerson"
+          v-model="warehouse.wareHouseContactPerson"
           label="Контактное лицо"
         />
       </q-card-section>
@@ -61,15 +68,15 @@ const onSubmit = async () => {
       <q-card-section class="q-pt-none">
         <q-input
           outlined
-          v-model="warehouse.warehousePhone"
-          mask="+#(###) ### - ####"
+          v-model="warehouse.wareHousePhone"
+          mask="+7(###) ### - ####"
           label="Телефон"
         />
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="закрыть" v-close-popup />
-        <q-btn flat label="сохранить" v-close-popup @click="onSubmit" />
+        <q-btn flat label="сохранить" v-close-popup @click="addWareHouse" />
       </q-card-actions>
     </q-card>
   </q-dialog>
