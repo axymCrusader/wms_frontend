@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import type {
   EquipmentCharacteristic,
-  CharacteristicTableData,
+  RelationshipСharacteristicType,
 } from "@/utils/types/store/EquipmentCharacteristicTypes";
 
 export const useEquipmentCharacteristicStore = defineStore(
@@ -9,7 +9,7 @@ export const useEquipmentCharacteristicStore = defineStore(
   {
     state: () => ({
       EquipmentCharacteristics: [] as EquipmentCharacteristic[],
-      CharacteristicsTableData: [] as CharacteristicTableData[],
+      RelationshipsСharacteristicType: [] as RelationshipСharacteristicType[],
       equipmentCharacteristicsDialogVisible: false,
     }),
     actions: {
@@ -24,16 +24,15 @@ export const useEquipmentCharacteristicStore = defineStore(
       ) {
         this.EquipmentCharacteristics.push(equipmentCharacteristic);
 
-        for (let i = 0; i < equipmentTypeIdName.length; i++) {
-          this.CharacteristicsTableData.push({
+        equipmentTypeIdName.forEach((equipmentType) => {
+          const newRelationship: RelationshipСharacteristicType = {
             equipmentCharacteristicId:
               equipmentCharacteristic.equipmentCharacteristicId,
-            equipmentCharacteristicName:
-              equipmentCharacteristic.equipmentCharacteristicName,
-            equipmentTypeId: equipmentTypeIdName[i].value,
-            equipmentTypeName: equipmentTypeIdName[i].label,
-          });
-        }
+            equipmentTypeId: equipmentType.value,
+          };
+          this.RelationshipsСharacteristicType.push(newRelationship);
+        });
+
         this.equipmentCharacteristicsDialogVisible = false;
         // $post<EquipmentCharacteristic>("/equipment-characteristic", { isBearer: true });
         // $post<CharacteristicsTableData>("/equipment-characteristic-table", { isBearer: true });
@@ -41,9 +40,6 @@ export const useEquipmentCharacteristicStore = defineStore(
       async deleteEquipmentCharacteristic(equipmentCharacteristicId: string) {
         this.EquipmentCharacteristics = this.EquipmentCharacteristics.filter(
           (ec) => ec.equipmentCharacteristicId !== equipmentCharacteristicId
-        );
-        this.CharacteristicsTableData = this.CharacteristicsTableData.filter(
-          (ctd) => ctd.equipmentCharacteristicId !== equipmentCharacteristicId
         );
         // $delete<EquipmentCharacteristic>("/equipment-characteristic/" + equipmentCharacteristicId, { isBearer: true });
       },

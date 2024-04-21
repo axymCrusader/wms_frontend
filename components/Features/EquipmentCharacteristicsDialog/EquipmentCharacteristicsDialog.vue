@@ -10,7 +10,7 @@ const equipmentCharacteristic = ref({
   equipmentCharacteristicName: "",
 });
 
-const options = equipmentTypeStore.EquipmentTypes.map(
+const equipmentTypeOptions = equipmentTypeStore.EquipmentTypes.map(
   (type: { equipmentTypeId: string; equipmentTypeName: string }) => ({
     label: type.equipmentTypeName,
     value: type.equipmentTypeId,
@@ -62,7 +62,7 @@ const addCharacteristic = async () => {
           filled
           v-model="multiple"
           multiple
-          :options="options"
+          :options="equipmentTypeOptions"
           option-value="value"
           option-label="label"
           label="Тип оборудования"

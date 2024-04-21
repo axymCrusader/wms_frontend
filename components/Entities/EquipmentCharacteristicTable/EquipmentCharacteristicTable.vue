@@ -1,11 +1,33 @@
 <script setup lang="ts">
 import { useEquipmentCharacteristicStore } from "@/store/EquipmentCharacteristicStore";
+import { useEquipmentTypeStore } from "@/store/EquipmentTypeStore";
 import { equipmentCharacteristicColumns } from "./EquipmentCharacteristicTableColums";
 
 const equipmentCharacteristicStore = useEquipmentCharacteristicStore();
-const CharacteristicsTableData = computed(
-  () => equipmentCharacteristicStore.CharacteristicsTableData
+const equipmentTypeStore = useEquipmentTypeStore();
+
+const joinedData = equipmentCharacteristicStore.EquipmentCharacteristics.map(
+  (ec: any) => {
+    const relationships =
+      equipmentCharacteristicStore.RelationshipsСharacteristicType.filter(
+        (r: any) => r.equipmentCharacteristicId === ec.equipmentCharacteristicId
+      );
+    const equipmentTypes = relationships.map((r: any) =>
+      equipmentTypeStore.EquipmentTypes.find(
+        (et: any) => et.equipmentTypeId === r.equipmentTypeId
+      )
+    );
+
+    return {
+      equipmentCharacteristicId: ec.equipmentCharacteristicId,
+      equipmentCharacteristicName: ec.equipmentCharacteristicName,
+      equipmentTypesName: equipmentTypes
+        .map((et: any) => et.equipmentTypeName)
+        .join(", "),
+    };
+  }
 );
+
 const deleteRow = (id: string) => {
   equipmentCharacteristicStore.deleteEquipmentCharacteristic(id);
 };
@@ -14,7 +36,7 @@ const deleteRow = (id: string) => {
 <template>
   <q-table
     title="Характеристики типов"
-    :rows="CharacteristicsTableData"
+    :rows="joinedData"
     :columns="equipmentCharacteristicColumns"
     row-key="equipmentCharacteristicId"
     flat

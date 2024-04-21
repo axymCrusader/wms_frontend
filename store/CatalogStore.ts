@@ -21,7 +21,7 @@ export const useCatalogStore = defineStore("CatalogStore", {
         .then((res) => {})
         .catch((error) => {});
     },
-    addCatalog(
+    async addCatalog(
       catalogs: Catalog[],
       equipments: Equipment[],
       properties: Property[]
@@ -29,6 +29,21 @@ export const useCatalogStore = defineStore("CatalogStore", {
       this.Catalogs.push(...catalogs);
       this.Equipments.push(...equipments);
       this.Properties.push(...properties);
+    },
+    getEquipmentNamesByCatalogId(catalogId: string) {
+      const catalogs = this.Catalogs.filter(
+        (catalog: Catalog) => catalog.catalogId === catalogId
+      );
+      const equipments = this.Equipments.filter((equipment: Equipment) =>
+        catalogs.some(
+          (catalog: Catalog) =>
+            catalog.catalogEquipmentId === equipment.equipmentId
+        )
+      );
+      return equipments.map((equipment) => ({
+        label: equipment.equipmentName,
+        value: equipment.equipmentId,
+      }));
     },
   },
 });

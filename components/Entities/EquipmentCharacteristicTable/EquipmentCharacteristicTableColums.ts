@@ -7,10 +7,10 @@ export const equipmentCharacteristicColumns = [
     sortable: true,
   },
   {
-    name: "equipmentTypeName",
-    label: "Нименование типа",
+    name: "equipmentTypesName",
+    label: "Нименование типов",
     align: "left",
-    field: "equipmentTypeName",
+    field: "equipmentTypesName",
     sortable: true,
   },
   {

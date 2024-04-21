@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { equipmentRequirementsColumns } from "./EquipmentRequirementsTableColums";
 
-const rows = [{ column1: "--", column2: "--", column3: "--", column4: "--" }];
+import { useEquipmentRequirementStore } from "@/store/EquipmentRequirementStore";
+const equipmentRequirementStore = useEquipmentRequirementStore();
+
+const equipmentRequirements = computed(
+  () => equipmentRequirementStore.equipmentRequirements
+);
 </script>
 
 <template>
   <q-table
     title="Потребность в оборудовании"
-    :rows="rows"
+    :rows="equipmentRequirements"
     :columns="equipmentRequirementsColumns"
     row-key="equipmentTypeId"
     flat
@@ -15,7 +20,8 @@ const rows = [{ column1: "--", column2: "--", column3: "--", column4: "--" }];
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
-        <q-btn label="Edit" color="primary" />
+        <q-btn label="Удалить" color="red" />
+        <q-btn label="Создать заказ" color="blue" />
       </q-td>
     </template>
   </q-table>

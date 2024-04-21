@@ -2,9 +2,7 @@ export interface EquipmentCharacteristic {
   equipmentCharacteristicId: string;
   equipmentCharacteristicName: string;
 }
-export interface CharacteristicTableData {
+export interface RelationshipСharacteristicType {
   equipmentCharacteristicId: string;
-  equipmentCharacteristicName: string;
   equipmentTypeId: string;
-  equipmentTypeName: string;
 }

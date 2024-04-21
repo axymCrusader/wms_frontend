@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const dialog = ref(false);
+import { useDeliveryOrderStore } from "@/store/DeliveryOrderStore";
+const deliveryOrderStore = useDeliveryOrderStore();
 </script>
 
 <template>
@@ -7,8 +8,8 @@ const dialog = ref(false);
     color="white"
     text-color="black"
     label="Создать заказ"
-    @click="dialog = true"
+    @click="deliveryOrderStore.deliveryOrderDialogVisible = true"
   />
-  <FeaturesEquipmentRequirementsDialog v-model="dialog" />
+  <FeaturesDocumentsDeliveryOrderDialog />
   <EntitiesEquipmentRequirementsTable />
 </template>

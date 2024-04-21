@@ -26,11 +26,23 @@ export const MENU_DATA: MenuItem[] = [
     url: "/EquipmentRequirements",
   },
   {
+    name: "Заказ на поставку",
+    url: "/DeliveryOrder",
+  },
+  {
+    name: "Заказ на приемку",
+    url: "/AcceptOrder",
+  },
+  {
+    name: "Заказ на отгрузку",
+    url: "/ShippingOrder",
+  },
+  {
     name: "Остатки",
     url: "/Balance",
   },
   {
-    name: "Документы",
-    url: "/Documents",
+    name: "Регистр движения",
+    url: "/Movements",
   },
 ];

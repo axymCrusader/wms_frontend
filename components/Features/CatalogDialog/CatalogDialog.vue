@@ -109,14 +109,14 @@ const addTable = () => {
     return;
   }
   const characteristicsColumns =
-    equipmentCharacteristicStore.CharacteristicsTableData.filter(
-      (row: {
-        equipmentCharacteristicId: string;
-        equipmentCharacteristicName: string;
-        equipmentTypeId: string;
-        equipmentTypeName: string;
-      }) => row.equipmentTypeId === selectedTypeIdName.value.value
-    );
+    equipmentCharacteristicStore.RelationshipsСharacteristicType.filter(
+      (rel: any) => rel.equipmentTypeId === selectedTypeIdName.value.value
+    ).map((rel: any) => {
+      return equipmentCharacteristicStore.EquipmentCharacteristics.find(
+        (ec: any) =>
+          ec.equipmentCharacteristicId === rel.equipmentCharacteristicId
+      );
+    });
 
   tables.value.push({
     title: selectedTypeIdName.value.label,
@@ -139,19 +139,12 @@ const addTable = () => {
         align: "left",
         field: "catalogPrice",
       },
-      ...characteristicsColumns.map(
-        (char: {
-          equipmentCharacteristicId: string;
-          equipmentCharacteristicName: string;
-          equipmentTypeId: string;
-          equipmentTypeName: string;
-        }) => ({
-          name: char.equipmentCharacteristicName,
-          label: char.equipmentCharacteristicName,
-          align: "left",
-          field: char.equipmentCharacteristicId,
-        })
-      ),
+      ...characteristicsColumns.map((char: any) => ({
+        name: char.equipmentCharacteristicName,
+        label: char.equipmentCharacteristicName,
+        align: "left",
+        field: char.equipmentCharacteristicId,
+      })),
     ],
     rows: [],
   });
