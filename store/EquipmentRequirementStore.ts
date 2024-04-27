@@ -4,29 +4,30 @@ export const useEquipmentRequirementStore = defineStore(
   "EquipmentRequirementStore",
   {
     state: () => ({
-      equipmentRequirements: [
+      EquipmentRequirements: [
         {
-          requirementId: "ПВ1",
-          requirementEquipmentId: "O1",
-          requirementWareHouseId: "C1",
-          requirementEquipmentQuantity: 23,
+          id: 1,
+          code: "ПВ1",
+          equipmentCode: "O1",
+          wareHouseCode: "C1",
+          equipmentQuantity: 23,
         },
         {
-          requirementId: "ПВ2",
-          requirementEquipmentId: "O1",
-          requirementWareHouseId: "C2",
-          requirementEquipmentQuantity: 11,
+          id: 2,
+          code: "ПВ2",
+          equipmentCode: "O1",
+          wareHouseCode: "C2",
+          equipmentQuantity: 2,
         },
         {
-          requirementId: "ПВ3",
-          requirementEquipmentId: "O2",
-          requirementWareHouseId: "C1",
-          requirementEquipmentQuantity: 3,
+          id: 3,
+          code: "ПВ3",
+          equipmentCode: "O2",
+          wareHouseCode: "C2",
+          equipmentQuantity: 12,
         },
       ],
     }),
-    actions: {
-      async fetchEquipmentRequirements() {},
-    },
+    actions: {},
   }
 );

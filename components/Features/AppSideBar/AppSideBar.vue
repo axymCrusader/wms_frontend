@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { MENU_DATA } from "./MenuData";
-const { isAuth, logout } = $useAuthorization()
+import { MENU_DATA } from "@/utils/AppSideBarData";
 </script>
 
 <style scoped></style>

@@ -1,3 +1,3 @@
 <template>
-  <h1>Delivery order</h1>
+  <WidgetsDeliveryOrderWidget />
 </template>

@@ -1,10 +1,14 @@
 import { defineStore } from "pinia";
-import axios from "axios";
-import type { Supplier } from "@/utils/types/store/SupplierTypes";
+import type { ISupplier } from "@/utils/types/store/SupplierTypes";
 
-export const useSupplierStore = defineStore("SupplierStore",{
-  state: () => ({
-    Suppliers: [] as Supplier[],
+interface IState {
+  Suppliers: ISupplier[];
+  supplierDialogVisible: boolean;
+}
+
+export const useSupplierStore = defineStore("SupplierStore", {
+  state: (): IState => ({
+    Suppliers: [],
     supplierDialogVisible: false,
   }),
   actions: {
@@ -13,14 +17,15 @@ export const useSupplierStore = defineStore("SupplierStore",{
       //   .then((response) => {this.Suppliers = response;})
       //   .catch((errors) => {console.error(errors)});
     },
-    async addSupplier(supplier: Supplier) {
+    addSupplier(supplier: ISupplier) {
+      supplier.id = this.Suppliers.length + 1;
       this.Suppliers.push(supplier);
       this.supplierDialogVisible = false;
       // $post<Supplier>("/supplier", { isBearer: true });
     },
-    async deleteSupplier(supplierId: string) {
-      this.Suppliers = this.Suppliers.filter(sp => sp.supplierId !== supplierId);
+    async deleteSupplier(id: number) {
+      this.Suppliers = this.Suppliers.filter((sp) => sp.id !== id);
       // $delete<Supplier>("/supplier/" + supplierId, { isBearer: true });
-    }, 
+    },
   },
 });

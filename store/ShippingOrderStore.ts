@@ -1,20 +1,20 @@
 import { defineStore } from "pinia";
 import type {
-  HeaderShippingOrder,
-  RowShippingOrder,
+  IShippingOrder,
+  IShippingOrderLine,
 } from "@/utils/types/store/ShippingOrderTypes";
 
+interface IState {
+  ShippingOrders: IShippingOrder[];
+  ShippingOrderLines: IShippingOrderLine[];
+  shippingOrderDialogVisible: boolean;
+}
+
 export const useShippingOrderStore = defineStore("ShippingOrderStore", {
-  state: () => ({
-    HeaderShippingOrders: [] as HeaderShippingOrder[],
-    RowShippingOrders: [] as RowShippingOrder[],
+  state: (): IState => ({
+    ShippingOrders: [],
+    ShippingOrderLines: [],
     shippingOrderDialogVisible: false,
   }),
-  actions: {
-    async fetchShippingOrders() {
-      // $get<EquipmentCharacteristic>("/equipment-characteristic", { isBearer: true })
-      //   .then((response) => {this.EquipmentCharacteristics = response;})
-      //   .catch((errors) => {console.error(errors)});
-    },
-  },
+  actions: {},
 });

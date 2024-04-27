@@ -1,10 +1,15 @@
 import { defineStore } from "pinia";
-import type { WareHouse } from "@/utils/types/store/WareHouseTypes";
+import type { IWareHouse } from "@/utils/types/store/WareHouseTypes";
 
-export const useWarehouseStore = defineStore('WareHouseStore',{
-  state: () => ({
-    WareHouses: [] as WareHouse[],
-      wareHouseDialogVisible: false,
+interface IState {
+  WareHouses: IWareHouse[];
+  wareHouseDialogVisible: boolean;
+}
+
+export const useWarehouseStore = defineStore("WareHouseStore", {
+  state: (): IState => ({
+    WareHouses: [],
+    wareHouseDialogVisible: false,
   }),
   actions: {
     async fetchWarehouses() {
@@ -12,13 +17,14 @@ export const useWarehouseStore = defineStore('WareHouseStore',{
       //   .then((response) => {this.WareHouses = response;})
       //   .catch((errors) => {console.error(errors)});
     },
-    async addWareHouse(warehouse: WareHouse) {
+    addWareHouse(warehouse: IWareHouse) {
+      warehouse.id = this.WareHouses.length + 1;
       this.WareHouses.push(warehouse);
       this.wareHouseDialogVisible = false;
       // $post<WareHouse>("/warehouse", { isBearer: true });
     },
-    async deleteWareHouse(wareHouseId: string) {
-      this.WareHouses = this.WareHouses.filter(wh => wh.wareHouseId !== wareHouseId);
+    deleteWareHouse(id: number) {
+      this.WareHouses = this.WareHouses.filter((wh) => wh.id !== id);
       // $delete<WareHouse>("/warehouse/" + wareHouseId, { isBearer: true });
     },
   },

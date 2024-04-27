@@ -1,0 +1,4 @@
+<template>
+  <EntitiesShippingOrderTable />
+  <FeaturesDocumentsShippingOrderShowShippingOrderDialog />
+</template>

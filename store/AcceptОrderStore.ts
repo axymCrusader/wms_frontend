@@ -1,20 +1,20 @@
 import { defineStore } from "pinia";
 import type {
-  HeaderAcceptОrder,
-  RowAcceptОrder,
+  IAcceptОrder,
+  IAcceptОrderLine,
 } from "@/utils/types/store/AcceptОrderTypes";
 
+interface IState {
+  AcceptОrders: IAcceptОrder[];
+  AcceptОrderLines: IAcceptОrderLine[];
+  acceptОrderDialogVisible: boolean;
+}
+
 export const useAcceptОrderStore = defineStore("AcceptОrderStore", {
-  state: () => ({
-    HeaderAcceptОrders: [] as HeaderAcceptОrder[],
-    RowAcceptОrders: [] as RowAcceptОrder[],
+  state: (): IState => ({
+    AcceptОrders: [],
+    AcceptОrderLines: [],
     acceptОrderDialogVisible: false,
   }),
-  actions: {
-    async fetchAcceptОrders() {
-      // $get<EquipmentCharacteristic>("/equipment-characteristic", { isBearer: true })
-      //   .then((response) => {this.EquipmentCharacteristics = response;})
-      //   .catch((errors) => {console.error(errors)});
-    },
-  },
+  actions: {},
 });

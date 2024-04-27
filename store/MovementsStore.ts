@@ -1,15 +1,13 @@
 import { defineStore } from "pinia";
-import type { Movement } from "~/utils/types/store/MovementsTypes";
+import type { IMovement } from "@/utils/types/store/MovementsTypes";
+
+interface IState {
+  Movements: IMovement[];
+}
 
 export const useMovementStore = defineStore("MovementStore", {
-  state: () => ({
-    Movements: [] as Movement[],
+  state: (): IState => ({
+    Movements: [],
   }),
-  actions: {
-    async fetchMovements() {
-      // $get<EquipmentCharacteristic>("/equipment-characteristic", { isBearer: true })
-      //   .then((response) => {this.EquipmentCharacteristics = response;})
-      //   .catch((errors) => {console.error(errors)});
-    },
-  },
+  actions: {},
 });

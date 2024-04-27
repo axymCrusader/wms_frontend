@@ -1,0 +1,4 @@
+<template>
+  <EntitiesDeliveryOrderTable />
+  <FeaturesDocumentsDeliveryOrderShowDeliveryOrderDialog />
+</template>

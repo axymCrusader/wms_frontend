@@ -1,8 +1,12 @@
-export interface WareHouse {
-  wareHouseId: string;
-  wareHouseName: string;
-  wareHouseType: string;
-  wareHouseAddress: string;
-  wareHouseContactPerson: string;
-  wareHousePhone: string;
+export interface Id {
+  id: number;
+}
+
+export interface IWareHouse extends Id {
+  code: string;
+  name: string;
+  type: string;
+  address: string;
+  contactPerson: string;
+  phone: string;
 }

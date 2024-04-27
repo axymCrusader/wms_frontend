@@ -1,8 +1,9 @@
-export interface EquipmentCharacteristic {
-  equipmentCharacteristicId: string;
-  equipmentCharacteristicName: string;
+export interface Id {
+  id: number;
 }
-export interface RelationshipСharacteristicType {
-  equipmentCharacteristicId: string;
-  equipmentTypeId: string;
+export interface IEquipmentCharacteristic extends Id {
+  name: string;
+}
+export interface IRelationshipСharacteristicType extends Id {
+  equipmentTypeId: number;
 }

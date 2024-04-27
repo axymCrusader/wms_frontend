@@ -1,15 +1,21 @@
 import { defineStore } from "pinia";
 import type {
-  EquipmentCharacteristic,
-  RelationshipСharacteristicType,
+  IEquipmentCharacteristic,
+  IRelationshipСharacteristicType,
 } from "@/utils/types/store/EquipmentCharacteristicTypes";
+
+interface IState {
+  EquipmentCharacteristics: IEquipmentCharacteristic[];
+  RelationshipsСharacteristicType: IRelationshipСharacteristicType[];
+  equipmentCharacteristicsDialogVisible: boolean;
+}
 
 export const useEquipmentCharacteristicStore = defineStore(
   "EquipmentCharacteristicStore",
   {
-    state: () => ({
-      EquipmentCharacteristics: [] as EquipmentCharacteristic[],
-      RelationshipsСharacteristicType: [] as RelationshipСharacteristicType[],
+    state: (): IState => ({
+      EquipmentCharacteristics: [],
+      RelationshipsСharacteristicType: [],
       equipmentCharacteristicsDialogVisible: false,
     }),
     actions: {
@@ -18,29 +24,29 @@ export const useEquipmentCharacteristicStore = defineStore(
         //   .then((response) => {this.EquipmentCharacteristics = response;})
         //   .catch((errors) => {console.error(errors)});
       },
-      async addEquipmentCharacteristic(
-        equipmentCharacteristic: EquipmentCharacteristic,
-        equipmentTypeIdName: { label: string; value: string }[]
+      addEquipmentCharacteristic(
+        equipmentCharacteristic: IEquipmentCharacteristic,
+        equipmentTypeIdName: { label: string; value: number }[]
       ) {
+        equipmentCharacteristic.id = this.EquipmentCharacteristics.length + 1;
         this.EquipmentCharacteristics.push(equipmentCharacteristic);
 
         equipmentTypeIdName.forEach((equipmentType) => {
-          const newRelationship: RelationshipСharacteristicType = {
-            equipmentCharacteristicId:
-              equipmentCharacteristic.equipmentCharacteristicId,
+          const newRelationship: IRelationshipСharacteristicType = {
+            id: equipmentCharacteristic.id,
             equipmentTypeId: equipmentType.value,
           };
           this.RelationshipsСharacteristicType.push(newRelationship);
         });
 
         this.equipmentCharacteristicsDialogVisible = false;
-        // $post<EquipmentCharacteristic>("/equipment-characteristic", { isBearer: true });
-        // $post<CharacteristicsTableData>("/equipment-characteristic-table", { isBearer: true });
       },
-      async deleteEquipmentCharacteristic(equipmentCharacteristicId: string) {
+      deleteEquipmentCharacteristic(id: number) {
         this.EquipmentCharacteristics = this.EquipmentCharacteristics.filter(
-          (ec) => ec.equipmentCharacteristicId !== equipmentCharacteristicId
+          (ec) => ec.id !== id
         );
+        this.RelationshipsСharacteristicType =
+          this.RelationshipsСharacteristicType.filter((r) => r.id !== id);
         // $delete<EquipmentCharacteristic>("/equipment-characteristic/" + equipmentCharacteristicId, { isBearer: true });
       },
     },

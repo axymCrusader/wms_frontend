@@ -1,49 +1,19 @@
 import { defineStore } from "pinia";
-import type {
-  Catalog,
-  Equipment,
-  Property,
-} from "@/utils/types/store/CatalogTypes";
+import type { ICatalog } from "@/utils/types/store/CatalogTypes";
+
+interface IState {
+  Catalogs: ICatalog[];
+  catalogAddDialogVisible: boolean;
+}
 
 export const useCatalogStore = defineStore("CatalogStore", {
-  state: () => ({
-    Catalogs: [] as Catalog[],
-    Equipments: [] as Equipment[],
-    Properties: [] as Property[],
-
-    catalogDialogVisible: false,
+  state: (): IState => ({
+    Catalogs: [],
+    catalogAddDialogVisible: false,
   }),
   actions: {
-    async fetchCatalogs() {
-      $get<Catalog>("/catalog", {
-        isBearer: true,
-      })
-        .then((res) => {})
-        .catch((error) => {});
-    },
-    async addCatalog(
-      catalogs: Catalog[],
-      equipments: Equipment[],
-      properties: Property[]
-    ) {
+    addCatalog(catalogs: ICatalog[]) {
       this.Catalogs.push(...catalogs);
-      this.Equipments.push(...equipments);
-      this.Properties.push(...properties);
-    },
-    getEquipmentNamesByCatalogId(catalogId: string) {
-      const catalogs = this.Catalogs.filter(
-        (catalog: Catalog) => catalog.catalogId === catalogId
-      );
-      const equipments = this.Equipments.filter((equipment: Equipment) =>
-        catalogs.some(
-          (catalog: Catalog) =>
-            catalog.catalogEquipmentId === equipment.equipmentId
-        )
-      );
-      return equipments.map((equipment) => ({
-        label: equipment.equipmentName,
-        value: equipment.equipmentId,
-      }));
     },
   },
 });

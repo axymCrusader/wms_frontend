@@ -1,14 +1,16 @@
-export interface HeaderDeliveryOrder {
-  deliveryOrderId: string;
-  deliveryOrderStatus: string;
-  deliveryOrderDate: string;
-  deliveryOrderEquipmentRequirementId: string;
-  deliveryOrderWareHouseId: string;
+export interface Id {
+  id: number;
+}
+export interface IDeliveryOrder extends Id {
+  code: string;
+  status: string;
+  date: string;
+  equipmentRequirementId: number | null;
+  wareHouseId: number;
 }
 
-export interface RowDeliveryOrder {
-  rowdeliveryOrderId: string;
-  rowEquipmentId: string;
-  rowEquipmentQuantity: number;
-  rowEquipmentSerialNumber: string;
+export interface IDeliveryOrderLine extends Id {
+  equipmentId: number;
+  equipmentCode: string;
+  equipmentQuantity: number;
 }

@@ -1,0 +1,4 @@
+<template>
+  <EntitiesAcceptОrderTable />
+  <FeaturesDocumentsAcceptОrderShowAcceptОrderDialog />
+</template>

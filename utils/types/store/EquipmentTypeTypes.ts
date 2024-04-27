@@ -1,4 +1,6 @@
-export interface EquipmentType {
-  equipmentTypeId: string;
-  equipmentTypeName: string;
+export interface Id {
+  id: number;
+}
+export interface IEquipmentType extends Id {
+  name: string;
 }

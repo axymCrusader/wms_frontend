@@ -1,23 +1,28 @@
 import { defineStore } from "pinia";
 import type {
-  HeaderDeliveryOrder,
-  RowDeliveryOrder,
+  IDeliveryOrder,
+  IDeliveryOrderLine,
 } from "~/utils/types/store/DeliveryOrderTypes";
 
+interface IState {
+  DeliveryOrders: IDeliveryOrder[];
+  DeliveryOrderLines: IDeliveryOrderLine[];
+  deliveryOrderAddDialogBasedOnRequirementVisible: boolean;
+  deliveryOrderAddDialogBasedOnForecastVisible: boolean;
+  deliveryOrderShowDialogVisible: boolean;
+}
+
 export const useDeliveryOrderStore = defineStore("DeliveryOrderStore", {
-  state: () => ({
-    HeaderDeliveryOrders: [] as HeaderDeliveryOrder[],
-    RowDeliveryOrders: [] as RowDeliveryOrder[],
-    deliveryOrderDialogVisible: false,
+  state: (): IState => ({
+    DeliveryOrders: [],
+    DeliveryOrderLines: [],
+    deliveryOrderAddDialogBasedOnRequirementVisible: false,
+    deliveryOrderAddDialogBasedOnForecastVisible: false,
+    deliveryOrderShowDialogVisible: false,
   }),
   actions: {
-    async fetchDeliveryOrders() {
-      // $get<EquipmentCharacteristic>("/equipment-characteristic", { isBearer: true })
-      //   .then((response) => {this.EquipmentCharacteristics = response;})
-      //   .catch((errors) => {console.error(errors)});
-    },
-    async addDeliveryOrder(headerDeliveryOrder: HeaderDeliveryOrder) {
-      this.HeaderDeliveryOrders.push(headerDeliveryOrder);
+    addDeliveryOrder(deliveryOrder: IDeliveryOrder) {
+      this.DeliveryOrders.push(deliveryOrder);
     },
   },
 });

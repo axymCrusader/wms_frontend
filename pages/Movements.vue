@@ -1,3 +1,3 @@
 <template>
-  <h1>Movements</h1>
+  <WidgetsMovementWidget />
 </template>

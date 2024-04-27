@@ -1,0 +1,45 @@
+export const wareHouseColumns = [
+  {
+    name: "code",
+    label: "Номер",
+    align: "left",
+    field: "code",
+    sortable: true,
+  },
+  {
+    name: "name",
+    label: "Наименование",
+    align: "left",
+    field: "name",
+    sortable: true,
+  },
+  {
+    name: "type",
+    label: "Тип склада",
+    align: "left",
+    field: "type",
+    sortable: true,
+  },
+  {
+    name: "address",
+    label: "Адрес",
+    align: "left",
+    field: "address",
+    sortable: true,
+  },
+  {
+    name: "contactPerson",
+    label: "Контакное лицо",
+    align: "left",
+    field: "contactPerson",
+    sortable: true,
+  },
+  {
+    name: "phone",
+    label: "Тeлефон",
+    align: "left",
+    field: "phone",
+    sortable: true,
+  },
+  { name: "actions", label: "Действие", align: "left" },
+];

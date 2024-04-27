@@ -1,9 +1,11 @@
-export interface Movement {
-  movementId: string;
-  movementWareHouseId: string;
-  movementOrderId: string;
-  movementEquipmentId: string;
-  movementDate: Date;
-  movementType: string;
-  movementQuantity: number;
+export interface Id {
+  id: number;
+}
+export interface IMovement extends Id {
+  wareHouseId: number;
+  documentId: number;
+  equipmentId: number;
+  date: string;
+  type: string;
+  equipmentQuantity: number;
 }

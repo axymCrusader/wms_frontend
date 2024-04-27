@@ -1,13 +1,16 @@
-export interface HeaderAcceptОrder {
-  acceptОrderId: string;
-  acceptОrderStatus: string;
-  acceptОrderDate: string;
-  acceptОrderWareHouseId: string;
+export interface Id {
+  id: number;
 }
 
-export interface RowAcceptОrder {
-  rowAcceptОrderId: string;
-  rowEquipmentId: string;
-  rowEquipmentQuantity: number;
-  rowEquipmentSerialNumber: string;
+export interface IAcceptОrder extends Id {
+  code: string;
+  status: string;
+  date: string;
+  wareHouseId: number;
+}
+
+export interface IAcceptОrderLine extends Id {
+  equipmentId: number;
+  equipmentQuantity: number;
+  equipmentCode: string;
 }
