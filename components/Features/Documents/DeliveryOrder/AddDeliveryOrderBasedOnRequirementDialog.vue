@@ -2,14 +2,20 @@
 import { useDeliveryOrderStore } from "@/store/DeliveryOrderStore";
 import { useWarehouseStore } from "@/store/WareHouseStore";
 import { DOCUMENT_STATUSES } from "@/utils/DocumentStatus";
-import { useCatalogStore } from "@/store/CatalogStore";
 import { useEquipmentRequirementStore } from "@/store/EquipmentRequirementStore";
-import type { ICatalog } from "@/utils/types/store/CatalogTypes";
+import { useBalanceStore } from "@/store/BalanceStore";
+import { useEquipmentStore } from "@/store/EquipmentStore";
+import { useRelocationOrderStore } from "@/store/RelocationOrderStore";
 
 const deliveryOrderStore = useDeliveryOrderStore();
+const relocationOrderStore = useRelocationOrderStore();
+const { EquipmentRequirements, currentEquipmentRequirement } = storeToRefs(
+  useEquipmentRequirementStore()
+);
+const { DeliveryOrders } = storeToRefs(deliveryOrderStore);
 const { WareHouses } = storeToRefs(useWarehouseStore());
-const { Catalogs } = storeToRefs(useCatalogStore());
-const { EquipmentRequirements } = storeToRefs(useEquipmentRequirementStore());
+const { Balances } = storeToRefs(useBalanceStore());
+const { Equipments } = storeToRefs(useEquipmentStore());
 
 const deliveryOrder = ref({
   id: 0,
@@ -17,116 +23,133 @@ const deliveryOrder = ref({
   status: "",
   date: "",
   wareHouseId: 0,
-  equipmentRequirementId: null,
+  equipmentRequirementCode: "",
 });
 
-const selectedWareHouseIdName = ref({
-  label: "",
-  value: 0,
-});
+const columns = [
+  {
+    name: "equipmentCode",
+    required: true,
+    label: "Номер оборудования",
+    align: "left",
+    field: "equipmentCode",
+  },
+  {
+    name: "equipmentQuantity",
+    required: true,
+    label: "Количество",
+    align: "left",
+    field: "equipmentQuantity",
+  },
+];
 
-const selectedEquipmentRequirementIdName = ref({
-  label: "",
-  value: 0,
-});
+const wareHouseCode = computed(
+  () => currentEquipmentRequirement.value?.wareHouseCode
+);
 
-const wareHouseOptions = WareHouses.value.map((wh) => ({
-  label: wh.name,
-  value: wh.id,
-}));
+const equipmentRequirementCode = computed(
+  () => currentEquipmentRequirement.value?.code
+);
 
-const catalogOptions = Catalogs.value.map((ct) => ({
-  label: ct.code,
-  value: ct.id,
-}));
+const equipmentData = ref<
+  { equipmentCode: string; equipmentQuantity: number }[]
+>([]);
 
-const equipmentRequirementOptions = EquipmentRequirements.value.map((er) => ({
-  label: er.code,
-  value: er.id,
-}));
+watch(
+  () => currentEquipmentRequirement.value?.code,
+  (newCode) => {
+    if (newCode) {
+      equipmentData.value = EquipmentRequirements.value
+        .filter((item) => item.code === newCode)
+        .map((item) => ({
+          equipmentCode: item.equipmentCode,
+          equipmentQuantity: item.equipmentQuantity,
+        }));
+    } else {
+      equipmentData.value = [];
+    }
+  }
+);
 
-const table = ref<{
-  title: string;
-  columns: { name: string; label: string; align: string; field: string }[];
-  rows: {
-    catalogCode: string;
-    equipmentCode: string;
-    equipmentName: string;
-    equipmentPrice: number;
-    equipmentQuantity: number;
-  }[];
-}>({
-  title: "Строки заказа",
-  columns: [
-    {
-      name: "catalogCode",
-      label: "Номер каталога",
-      align: "left",
-      field: "catalogCode",
-    },
-    {
-      name: "equipmentCode",
-      label: "Номер оборудования",
-      align: "left",
-      field: "equipmentCode",
-    },
-    {
-      name: "equipmentName",
-      label: "Наименование оборудования",
-      align: "left",
-      field: "equipmentName",
-    },
-    {
-      name: "equipmentPrice",
-      label: "Цена ед. оборудования",
-      align: "left",
-      field: "equipmentPrice",
-    },
-    {
-      name: "equipmentQuantity",
-      label: "Кол-во",
-      align: "left",
-      field: "equipmentQuantity",
-    },
-  ],
-  rows: [],
-});
+const addDeliveryOrderOrRelocationOrder = () => {
+  const allQuantitiesZero = equipmentData.value.every(
+    (item) => item.equipmentQuantity === 0
+  );
 
-const addRow = () => {
-  table.value.rows.push({
-    catalogCode: "",
-    equipmentCode: "",
-    equipmentName: "",
-    equipmentPrice: 0,
-    equipmentQuantity: 0,
-  });
-};
-const removeRow = () => {
-  if (table.value.rows.length > 0) {
-    table.value.rows.pop();
+  if (allQuantitiesZero) {
+    deliveryOrder.value.status = DOCUMENT_STATUSES.CREATED;
+    deliveryOrder.value.date = new Date().toLocaleDateString("en-GB");
+    const wareHouseId =
+      WareHouses.value.find((wh) => wh.code === wareHouseCode.value)?.id ?? 0;
+    deliveryOrder.value.wareHouseId = wareHouseId;
+    deliveryOrder.value.id = 1;
+    deliveryOrder.value.equipmentRequirementCode =
+      equipmentRequirementCode.value as string;
+
+    const lines = [
+      {
+        id: 1,
+        equipmentId: 1,
+        equipmentCode: "О1",
+        equipmentQuantity: 2,
+      },
+      {
+        id: 1,
+        equipmentId: 4,
+        equipmentCode: "О4",
+        equipmentQuantity: 2,
+      },
+    ];
+    relocationOrderStore.addRelocationOrder(deliveryOrder.value, lines);
+  } else {
+    deliveryOrder.value.status = DOCUMENT_STATUSES.CREATED;
+    deliveryOrder.value.date = new Date().toLocaleDateString("en-GB");
+    const wareHouseId =
+      WareHouses.value.find((wh) => wh.code === wareHouseCode.value)?.id ?? 0;
+    deliveryOrder.value.wareHouseId = wareHouseId;
+    deliveryOrder.value.id = DeliveryOrders.value.length + 1;
+    deliveryOrder.value.equipmentRequirementCode =
+      equipmentRequirementCode.value as string;
+
+    const equipmentDataArray = equipmentData.value;
+    const equipmentCodes: string[] = equipmentDataArray.map(
+      (row) => row.equipmentCode
+    );
+    const equipmentIds: number[] = Equipments.value
+      .filter((equipment) => equipmentCodes.includes(equipment.code))
+      .map((equipment) => equipment.id);
+
+    const lines = equipmentDataArray.map((item, index) => ({
+      id: deliveryOrder.value.id,
+      equipmentId: equipmentIds[index],
+      equipmentCode: item.equipmentCode,
+      equipmentQuantity: item.equipmentQuantity,
+    }));
+
+    deliveryOrderStore.addDeliveryOrder(deliveryOrder.value, lines);
   }
 };
 
-const onSubmit = () => {
-  deliveryOrder.value.status = DOCUMENT_STATUSES.CREATED;
-  deliveryOrder.value.date = new Date().toISOString();
-  deliveryOrder.value.wareHouseId = selectedWareHouseIdName.value.value;
+const balanceAnalysis = () => {
+  const filteredBalances = Balances.value.filter((balance) => {
+    const warehouse = WareHouses.value.find(
+      (wh) => wh.id === balance.wareHouseId
+    );
+    return warehouse?.type === "МТС";
+  });
+  console.log(filteredBalances);
+  equipmentData.value = equipmentData.value.map((item) => {
+    const balanceItem = filteredBalances.find(
+      (balance) => balance.equipmentCode === item.equipmentCode
+    );
+    if (balanceItem) {
+      const itemQuantity = toRef(item, "equipmentQuantity");
+      itemQuantity.value -= balanceItem.equipmentQuantity;
+    }
+    return item;
+  });
 
-  // add rows DeliveryOrder
-  deliveryOrderStore.addDeliveryOrder(deliveryOrder.value);
-  // add create AcceptОrder
-  deliveryOrder.value = {
-    id: 0,
-    code: "",
-    status: "",
-    date: "",
-    wareHouseId: 0,
-    equipmentRequirementId: null,
-  };
-  selectedWareHouseIdName.value = {
-    label: "",
-    value: 0,
-  };
+  console.log("equipmentData after balance analysis:", equipmentData.value);
 };
 </script>
 
@@ -135,7 +158,7 @@ const onSubmit = () => {
     v-model="deliveryOrderStore.deliveryOrderAddDialogBasedOnRequirementVisible"
     persistent
   >
-    <q-card style="min-width: 800px">
+    <q-card style="min-width: 900px">
       <q-card-section class="row items-center q-pb-none text-h6">
         Форма для создания заказа
       </q-card-section>
@@ -145,70 +168,40 @@ const onSubmit = () => {
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-select
-          filled
-          v-model="selectedWareHouseIdName"
-          :options="wareHouseOptions"
-          option-value="value"
-          option-label="label"
-          label="Склад"
-        />
+        <q-input filled v-model="wareHouseCode" label="Номер склада" readonly />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-select
+        <q-input
           filled
-          v-model="selectedEquipmentRequirementIdName"
-          :options="equipmentRequirementOptions"
-          option-value="value"
-          option-label="label"
-          label="Потребность в оборудовании"
+          v-model="equipmentRequirementCode"
+          label="Номер потребности"
+          readonly
         />
       </q-card-section>
 
       <div class="q-pa-md">
         <q-toolbar>
           <q-toolbar-title>
-            {{ table.title }}
+            {{ "Строки заказа на поставку" }}
           </q-toolbar-title>
           <q-space />
         </q-toolbar>
-        <q-table flat bordered :rows="table.rows" :columns="table.columns">
+        <q-table flat bordered :rows="equipmentData" :columns="columns">
           <template v-slot:top>
-            <q-btn color="green" label="Добавить строку" @click="addRow" />
             <q-btn
-              v-if="table.rows.length !== 0"
               class="q-ml-sm"
-              color="red"
-              label="Удалить строку"
-              @click="removeRow"
+              color="green"
+              label="Анализ остатков"
+              @click="balanceAnalysis"
             />
             <q-space />
           </template>
 
           <template v-slot:body="props">
             <q-tr :props="props">
-              <q-td key="catalogCode" :props="props">
-                <q-select
-                  filled
-                  v-model="props.row.catalogCode"
-                  :options="catalogOptions"
-                  option-value="value"
-                  option-label="label"
-                />
-              </q-td>
               <q-td key="equipmentCode" :props="props">
-                <q-select
-                  filled
-                  v-model="props.row.equipmentCode"
-                  :options="['1', '2']"
-                />
-              </q-td>
-              <q-td key="equipmentName" :props="props">
-                <q-input v-model="props.row.equipmentName" />
-              </q-td>
-              <q-td key="equipmentPrice" :props="props">
-                <q-input v-model.number="props.row.equipmentPrice" />
+                <q-input filled v-model="props.row.equipmentCode" readonly />
               </q-td>
               <q-td key="equipmentQuantity" :props="props">
                 <q-input v-model.number="props.row.equipmentQuantity" />
@@ -220,7 +213,12 @@ const onSubmit = () => {
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="закрыть" v-close-popup />
-        <q-btn flat label="сохранить" v-close-popup @click="onSubmit" />
+        <q-btn
+          flat
+          label="сохранить"
+          v-close-popup
+          @click="addDeliveryOrderOrRelocationOrder"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

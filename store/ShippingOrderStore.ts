@@ -7,14 +7,31 @@ import type {
 interface IState {
   ShippingOrders: IShippingOrder[];
   ShippingOrderLines: IShippingOrderLine[];
-  shippingOrderDialogVisible: boolean;
+  currentOrder: IShippingOrder | null;
+  shippingOrderAddDialogVisible: boolean;
 }
 
 export const useShippingOrderStore = defineStore("ShippingOrderStore", {
   state: (): IState => ({
     ShippingOrders: [],
     ShippingOrderLines: [],
-    shippingOrderDialogVisible: false,
+    currentOrder: null,
+    shippingOrderAddDialogVisible: false,
   }),
-  actions: {},
+  actions: {
+    addShippingОrder(
+      shippingОrder: IShippingOrder,
+      shippingОrderLines: IShippingOrderLine[]
+    ) {
+      this.ShippingOrders.push(shippingОrder);
+
+      shippingОrderLines.forEach((sol) => {
+        this.ShippingOrderLines.push(sol);
+      });
+      this.shippingOrderAddDialogVisible = false;
+    },
+    setOrderData(order: IShippingOrder) {
+      this.currentOrder = order;
+    },
+  },
 });

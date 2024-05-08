@@ -11,5 +11,4 @@ const SupplierStore = useSupplierStore();
     label="Добавить поставщика"
     @click="SupplierStore.supplierDialogVisible = true"
   />
-  <q-btn color="white" class="q-ml-sm" text-color="black" label="Фильтр" />
 </template>

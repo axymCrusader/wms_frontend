@@ -1,23 +1,30 @@
 export const balanceColumns = [
   {
-    name: "balanceId",
-    label: "Номер",
+    name: "warehouseName",
+    label: "Наименование склада",
     align: "left",
-    field: "balanceId",
+    field: "warehouseName",
+    sortable: true,
+  },
+  {
+    name: "equipmentCode",
+    label: "Номер оборудования",
+    align: "left",
+    field: "equipmentCode",
     sortable: true,
   },
   {
     name: "equipmentName",
-    label: "Наименование оборудование",
+    label: "Наименование оборудования",
     align: "left",
     field: "equipmentName",
     sortable: true,
   },
   {
-    name: "wareHouseName",
-    label: "Наименование склада",
+    name: "date",
+    label: "Дата",
     align: "left",
-    field: "wareHouseName",
+    field: "date",
     sortable: true,
   },
   {

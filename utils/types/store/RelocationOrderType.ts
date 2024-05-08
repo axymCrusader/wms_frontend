@@ -1,7 +1,7 @@
 export interface Id {
   id: number;
 }
-export interface IDeliveryOrder extends Id {
+export interface IRelocationOrder extends Id {
   code: string;
   status: string;
   date: string;
@@ -9,7 +9,7 @@ export interface IDeliveryOrder extends Id {
   wareHouseId: number;
 }
 
-export interface IDeliveryOrderLine extends Id {
+export interface IRelocationOrder extends Id {
   equipmentId: number;
   equipmentCode: string;
   equipmentQuantity: number;

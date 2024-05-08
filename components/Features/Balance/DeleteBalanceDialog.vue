@@ -1,10 +1,51 @@
 <script setup lang="ts">
 import { useBalanceStore } from "@/store/BalanceStore";
-const balanceStore = useBalanceStore();
+import { DOCUMENT_STATUSES } from "@/utils/DocumentStatus";
+import { useRelocationOrderStore } from "@/store/RelocationOrderStore";
+import { useShippingOrderStore } from "@/store/ShippingOrderStore";
+import { useMovementStore } from "@/store/MovementsStore";
+import { useWarehouseStore } from "@/store/WareHouseStore";
 
-const code = "";
-const status = "";
-const date = "";
+const balanceStore = useBalanceStore();
+const movmentStore = useMovementStore();
+
+const { RelocationOrderLines, RelocationOrders } = storeToRefs(
+  useRelocationOrderStore()
+);
+const { ShippingOrderLines, ShippingOrders } = storeToRefs(
+  useShippingOrderStore()
+);
+const { Balances } = storeToRefs(balanceStore);
+const { Movements } = storeToRefs(movmentStore);
+const { WareHouses } = storeToRefs(useWarehouseStore());
+const selectedShippingOrderIdCode = ref({
+  label: "",
+  value: 0,
+});
+
+const confirmedOrders = computed(() => {
+  return ShippingOrders.value.filter(
+    (so) => so.status === DOCUMENT_STATUSES.CONFIRMED
+  );
+});
+
+const confirmedOrderOptions = computed(() => {
+  return confirmedOrders.value.map((ro) => ({
+    label: ro.code,
+    value: ro.id,
+  }));
+});
+
+const selectedShippingOrderLines = computed(() => {
+  if (selectedShippingOrderIdCode.value) {
+    return ShippingOrderLines.value.filter(
+      (line) => line.id === selectedShippingOrderIdCode.value.value
+    );
+  }
+  return [];
+});
+
+const tableData = selectedShippingOrderLines;
 
 const columns = [
   {
@@ -12,14 +53,7 @@ const columns = [
     required: true,
     label: "Номер оборудования",
     align: "left",
-    field: "equipmentNumber",
-  },
-  {
-    name: "equipmentName",
-    required: true,
-    label: "Наименование оборудования",
-    align: "left",
-    field: "equipmentName",
+    field: "equipmentCode",
   },
   {
     name: "equipmentQuantity",
@@ -29,11 +63,48 @@ const columns = [
     field: "equipmentQuantity",
   },
 ];
-const tableData = [
-  { equipmentNumber: "123", equipmentName: "Оборудование 1", quantity: "10" },
-  { equipmentNumber: "456", equipmentName: "Оборудование 2", quantity: "20" },
-  { equipmentNumber: "789", equipmentName: "Оборудование 3", quantity: "30" },
-];
+
+const deleteBalance = () => {
+  const shippingOrderLines = ShippingOrderLines.value.filter(
+    (s) => s.id === selectedShippingOrderIdCode.value.value
+  );
+  const shippingOrder = ShippingOrders.value.find(
+    (s) => s.id === selectedShippingOrderIdCode.value.value
+  );
+  if (shippingOrder) {
+    shippingOrder.status = DOCUMENT_STATUSES.SENT;
+
+    let movementId = Movements.value.length + 1;
+
+    const movements = shippingOrderLines.map((line) => {
+      const balance = Balances.value.find(
+        (b) =>
+          b.equipmentCode === line.equipmentCode &&
+          b.wareHouseId ===
+            WareHouses.value.find(
+              (w) => w.id === b.wareHouseId && w.type === "МТС"
+            )?.id
+      );
+      if (balance) {
+        balance.equipmentQuantity -= line.equipmentQuantity;
+      }
+
+      return {
+        id: movementId++,
+        ...{
+          wareHouseId: shippingOrder.wareHouseId,
+          documentId: line.id,
+          equipmentId: line.equipmentId,
+          type: "Отгрузка",
+          equipmentQuantity: line.equipmentQuantity,
+          date: new Date().toLocaleDateString("en-GB"),
+        },
+      };
+    });
+
+    movmentStore.addMovment(movements);
+  }
+};
 </script>
 
 <template>
@@ -44,7 +115,12 @@ const tableData = [
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-select filled v-model="code" label="Номер документа перемещения" />
+        <q-select
+          filled
+          v-model="selectedShippingOrderIdCode"
+          :options="confirmedOrderOptions"
+          label="Номер документа отгрузки"
+        />
       </q-card-section>
 
       <q-card-section>
@@ -53,7 +129,13 @@ const tableData = [
 
       <q-card-actions align="right">
         <q-btn flat label="Закрыть" color="primary" v-close-popup />
-        <q-btn flat label="Изменить" color="primary" v-close-popup />
+        <q-btn
+          flat
+          label="Сохранить"
+          color="primary"
+          v-close-popup
+          @click="deleteBalance"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

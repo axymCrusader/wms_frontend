@@ -6,6 +6,8 @@ import { equipmentCharacteristicColumns } from "@/utils/TableColums/EquipmentCha
 const equipmentCharacteristicStore = useEquipmentCharacteristicStore();
 const equipmentTypeStore = useEquipmentTypeStore();
 
+const filter = ref("");
+
 const { EquipmentCharacteristics, RelationshipsСharacteristicType } =
   storeToRefs(equipmentCharacteristicStore);
 
@@ -43,13 +45,28 @@ const deleteRow = (id: number) => {
     :rows="joinedData"
     :columns="equipmentCharacteristicColumns"
     row-key="id"
+    :filter="filter"
     flat
     sep-rows
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
         <q-btn label="Удалить" color="red" @click="deleteRow(props.row.id)" />
+        <q-btn class="q-ml-sm" label="Редактировать" color="green" />
       </q-td>
+    </template>
+    <template v-slot:top-right>
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="filter"
+        placeholder="Поиск"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
     </template>
   </q-table>
 </template>

@@ -3,8 +3,7 @@ export interface Id {
 }
 
 export interface IBalance extends Id {
-  parentEquipmentId: number;
-  equipmentid: number;
+  equipmentId: number;
   equipmentCode: string;
   wareHouseId: number;
   date: string;

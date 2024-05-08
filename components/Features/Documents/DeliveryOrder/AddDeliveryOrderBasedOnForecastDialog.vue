@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { useDeliveryOrderStore } from "@/store/DeliveryOrderStore";
 import { useWarehouseStore } from "@/store/WareHouseStore";
-import { useSupplierStore } from "@/store/SupplierStore";
 import { DOCUMENT_STATUSES } from "@/utils/DocumentStatus";
+import { useEquipmentStore } from "@/store/EquipmentStore";
 import { useCatalogStore } from "@/store/CatalogStore";
 
-import type { ICatalog } from "@/utils/types/store/CatalogTypes";
-
 const deliveryOrderStore = useDeliveryOrderStore();
-const { Suppliers } = storeToRefs(useSupplierStore());
+const { deliveryOrderAddDialogBasedOnForecastVisible, DeliveryOrders } =
+  storeToRefs(deliveryOrderStore);
 const { WareHouses } = storeToRefs(useWarehouseStore());
+const { Equipments, Handbooks } = storeToRefs(useEquipmentStore());
 const { Catalogs } = storeToRefs(useCatalogStore());
 
 const deliveryOrder = ref({
@@ -18,7 +18,7 @@ const deliveryOrder = ref({
   status: "",
   date: "",
   wareHouseId: 0,
-  equipmentRequirementId: null,
+  equipmentRequirementCode: null,
 });
 
 const selectedWareHouseIdName = ref({
@@ -27,20 +27,14 @@ const selectedWareHouseIdName = ref({
 });
 
 const wareHouseOptions = WareHouses.value.map((wh) => ({
-  label: wh.name,
+  label: wh.code,
   value: wh.id,
-}));
-
-const catalogOptions = Catalogs.value.map((ct) => ({
-  label: ct.code,
-  value: ct.id,
 }));
 
 const table = ref<{
   title: string;
   columns: { name: string; label: string; align: string; field: string }[];
   rows: {
-    catalogCode: string;
     equipmentCode: string;
     equipmentName: string;
     equipmentPrice: number;
@@ -49,12 +43,6 @@ const table = ref<{
 }>({
   title: "Строки заказа",
   columns: [
-    {
-      name: "catalogCode",
-      label: "Номер каталога",
-      align: "left",
-      field: "catalogCode",
-    },
     {
       name: "equipmentCode",
       label: "Номер оборудования",
@@ -85,7 +73,6 @@ const table = ref<{
 
 const addRow = () => {
   table.value.rows.push({
-    catalogCode: "",
     equipmentCode: "",
     equipmentName: "",
     equipmentPrice: 0,
@@ -98,40 +85,87 @@ const removeRow = () => {
   }
 };
 
-const onSubmit = () => {
+const equipmentCodeOptions = computed(() => {
+  const handbookEquipmentIds = Handbooks.value.map((hb) => hb.id);
+
+  const filteredEquipments = Equipments.value.filter((eq) =>
+    handbookEquipmentIds.includes(eq.id)
+  );
+  const filteredCatalogs = Catalogs.value.filter((cat) =>
+    handbookEquipmentIds.includes(cat.equipmentId)
+  );
+
+  return table.value.rows.map((row) => {
+    return filteredEquipments.map((eq) => {
+      const catalog = filteredCatalogs.find((cat) => cat.equipmentId === eq.id);
+      return {
+        label: eq.code,
+        value: {
+          name: eq.name,
+          price: catalog ? catalog.price : 0,
+        },
+      };
+    });
+  });
+});
+
+const addDeliveryOrder = () => {
   deliveryOrder.value.status = DOCUMENT_STATUSES.CREATED;
-  deliveryOrder.value.date = new Date().toISOString();
+  deliveryOrder.value.date = new Date().toLocaleDateString("en-GB");
   deliveryOrder.value.wareHouseId = selectedWareHouseIdName.value.value;
-  // add rows DeliveryOrder
-  deliveryOrderStore.addDeliveryOrder(deliveryOrder.value);
-  // add create AcceptОrder
+  deliveryOrder.value.id = DeliveryOrders.value.length + 1;
+  deliveryOrder.value.equipmentRequirementCode = null;
+
+  const equipmentRows: { equipmentCode: string }[] = table.value.rows.map(
+    (row) => ({
+      equipmentCode: row.equipmentCode.label,
+    })
+  );
+  const equipmentCodes: string[] = equipmentRows.map(
+    (row) => row.equipmentCode
+  );
+  const equipmentIds: number[] = Equipments.value
+    .filter((equipment) => equipmentCodes.includes(equipment.code))
+    .map((equipment) => equipment.id);
+
+  const lines = table.value.rows.map((row, index) => ({
+    id: deliveryOrder.value.id,
+    equipmentId: equipmentIds[index],
+    equipmentCode: equipmentCodes[index],
+    equipmentQuantity: row.equipmentQuantity,
+  }));
+
+  deliveryOrderStore.addDeliveryOrder(deliveryOrder.value, lines);
+
   deliveryOrder.value = {
     id: 0,
     code: "",
     status: "",
     date: "",
     wareHouseId: 0,
-    equipmentRequirementId: null,
+    equipmentRequirementCode: null,
   };
   selectedWareHouseIdName.value = {
     label: "",
     value: 0,
   };
+  table.value.rows = [];
 };
 </script>
 
 <template>
-  <q-dialog
-    v-model="deliveryOrderStore.deliveryOrderAddDialogBasedOnForecastVisible"
-    persistent
-  >
+  <q-dialog v-model="deliveryOrderAddDialogBasedOnForecastVisible" persistent>
     <q-card style="min-width: 800px">
       <q-card-section class="row items-center q-pb-none text-h6">
-        Форма для создания заказа
+        Форма для добавления заказа на основании прогноза
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-input outlined v-model="deliveryOrder.code" label="Номер заказа" />
+        <q-input
+          outlined
+          v-model.number="deliveryOrder.code"
+          label="Номер зказа"
+        />
       </q-card-section>
 
       <q-card-section class="q-pt-none">
@@ -167,27 +201,25 @@ const onSubmit = () => {
 
           <template v-slot:body="props">
             <q-tr :props="props">
-              <q-td key="catalogCode" :props="props">
-                <q-select
-                  filled
-                  v-model="props.row.catalogCode"
-                  :options="catalogOptions"
-                  option-value="value"
-                  option-label="label"
-                />
-              </q-td>
               <q-td key="equipmentCode" :props="props">
                 <q-select
                   filled
                   v-model="props.row.equipmentCode"
-                  :options="['1', '2']"
+                  :options="equipmentCodeOptions[props.rowIndex]"
+                  option-label="label"
+                  @update:model-value="
+                    (val) => {
+                      props.row.equipmentName = val.value.name;
+                      props.row.equipmentPrice = val.value.price;
+                    }
+                  "
                 />
               </q-td>
               <q-td key="equipmentName" :props="props">
-                <q-input v-model="props.row.equipmentName" />
+                <q-input v-model="props.row.equipmentName" readonly />
               </q-td>
               <q-td key="equipmentPrice" :props="props">
-                <q-input v-model.number="props.row.equipmentPrice" />
+                <q-input v-model.number="props.row.equipmentPrice" readonly />
               </q-td>
               <q-td key="equipmentQuantity" :props="props">
                 <q-input v-model.number="props.row.equipmentQuantity" />
@@ -199,7 +231,7 @@ const onSubmit = () => {
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="закрыть" v-close-popup />
-        <q-btn flat label="сохранить" v-close-popup @click="onSubmit" />
+        <q-btn flat label="сохранить" v-close-popup @click="addDeliveryOrder" />
       </q-card-actions>
     </q-card>
   </q-dialog>

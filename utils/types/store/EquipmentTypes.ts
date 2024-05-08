@@ -12,3 +12,7 @@ export interface IProperty extends Id {
   equipmentCharacteristicId: number;
   value: string;
 }
+
+export interface IHandbook extends Id {
+  catalogId: number;
+}

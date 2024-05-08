@@ -11,5 +11,4 @@ const warehouseStore = useWarehouseStore();
     label="Добавить склад"
     @click="warehouseStore.wareHouseDialogVisible = true"
   />
-  <q-btn color="white" class="q-ml-sm" text-color="black" label="Фильтр" />
 </template>

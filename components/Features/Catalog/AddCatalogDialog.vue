@@ -2,11 +2,16 @@
 import { useCatalogStore } from "@/store/CatalogStore";
 import { useSupplierStore } from "@/store/SupplierStore";
 import { useEquipmentStore } from "@/store/EquipmentStore";
-import type { ICatalog } from "@/utils/types/store/CatalogTypes";
-const catalogStore = useCatalogStore();
+import { useEquipmentTypeStore } from "@/store/EquipmentTypeStore";
+import { useEquipmentCharacteristicStore } from "@/store/EquipmentCharacteristicStore";
 
+const catalogStore = useCatalogStore();
+const equipmentStore = useEquipmentStore();
 const { Catalogs, catalogAddDialogVisible } = storeToRefs(catalogStore);
-const { Equipments } = storeToRefs(useEquipmentStore());
+const { EquipmentTypes } = storeToRefs(useEquipmentTypeStore());
+const { EquipmentCharacteristics, RelationshipsСharacteristicType } =
+  storeToRefs(useEquipmentCharacteristicStore());
+const { Equipments, Properties } = storeToRefs(equipmentStore);
 const { Suppliers } = storeToRefs(useSupplierStore());
 
 const catalog = ref({
@@ -23,63 +28,131 @@ const selectedSupplierIdName = ref({
   value: 0,
 });
 
-const equipmentOptions = Equipments.value.map((eq) => ({
-  label: eq.code,
-  value: eq.id,
+const typeOptions = EquipmentTypes.value.map((et) => ({
+  label: et.name,
+  value: et.id,
 }));
 
-const table = ref({
-  title: "Оборудование",
-  columns: [
-    {
-      name: "code",
-      label: "Номер оборудования",
-      align: "left",
-      field: "code",
-    },
-    {
-      name: "name",
-      label: "Наименование оборудования",
-      align: "left",
-      field: "name",
-    },
-    {
-      name: "price",
-      label: "Цена",
-      align: "left",
-      field: "price",
-    },
-  ],
-  rows: [] as { code: number; name: string; price: number }[],
+const selectedTypeIdName = ref({
+  label: "",
+  value: 0,
 });
 
+const tables = ref<
+  {
+    title: string;
+    subtittle: number;
+    columns: {
+      name: string;
+      label: string;
+      align: string;
+      field: number;
+    }[];
+    rows: any[];
+  }[]
+>([]);
+
 const addCatalog = () => {
-  const newCatalogs: ICatalog[] = [];
-  table.value.rows.forEach((row) => {
-    const newCatalog = {
-      id: Catalogs.value.length + 1,
-      code: catalog.value.code,
-      supplierId: selectedSupplierIdName.value.value,
-      equipmentId: row.code.value,
-      price: row.price,
-    };
-    newCatalogs.push(newCatalog);
+  tables.value.forEach((table) => {
+    table.rows.forEach((row) => {
+      const newEquipmentId = Equipments.value.length + 1;
+      const newCatalogId = Catalogs.value.length + 1;
+
+      const newCatalog = {
+        id: newCatalogId,
+        code: catalog.value.code,
+        supplierId: selectedSupplierIdName.value.value,
+        equipmentId: newEquipmentId,
+        price: row.catalogPrice,
+      };
+
+      catalogStore.addCatalog(newCatalog);
+
+      const newEquipment = {
+        id: newEquipmentId,
+        code: row.equipmentCode,
+        name: row.equipmentName,
+        equipmentTypeId: table.subtittle,
+      };
+
+      equipmentStore.addEquipment(newEquipment);
+
+      table.columns.forEach((column) => {
+        if (column.name !== "code" && column.name !== "name") {
+          const newProperty = {
+            id: newEquipmentId,
+            equipmentCharacteristicId: column.field,
+            value: row[column.name],
+          };
+          equipmentStore.addProperty(newProperty);
+        }
+      });
+    });
   });
-  catalogStore.addCatalog(newCatalogs);
-  table.value.rows = [];
+  tables.value = [];
+  selectedTypeIdName.value = { label: "", value: 0 };
+
+  tables.value = [];
+  catalog.value = { code: "" };
   selectedSupplierIdName.value = { label: "", value: 0 };
+  selectedTypeIdName.value = { label: "", value: 0 };
 };
 
-const addRow = () => {
-  table.value.rows.push({
-    code: 0,
-    name: "",
-    price: 0,
+const addTable = () => {
+  const existingTable = tables.value.find(
+    (table) => table.title === selectedTypeIdName.value.label
+  );
+
+  if (existingTable) {
+    alert("Таблица этого типа уже добавлена");
+    return;
+  }
+  const characteristicsColumns = RelationshipsСharacteristicType.value
+    .filter((rel) => rel.equipmentTypeId === selectedTypeIdName.value.value)
+    .map((rel) => {
+      return EquipmentCharacteristics.value.find((ec) => ec.id === rel.id);
+    });
+
+  tables.value.push({
+    title: selectedTypeIdName.value.label,
+    subtittle: selectedTypeIdName.value.value,
+    columns: [
+      {
+        name: "equipmentCode",
+        label: "Номер оборудования",
+        align: "left",
+        field: "equipmentCode",
+      },
+      {
+        name: "equipmentName",
+        label: "Наименование оборудования",
+        align: "left",
+        field: "equipmentName",
+      },
+      {
+        name: "catalogPrice",
+        label: "Цена оборудования",
+        align: "left",
+        field: "catalogPrice",
+      },
+      ...characteristicsColumns.map((cc: any) => ({
+        name: cc.name,
+        label: cc.name,
+        align: "left",
+        field: cc.id,
+      })),
+    ],
+    rows: [],
   });
 };
-const removeRow = () => {
-  if (table.value.rows.length > 0) {
-    table.value.rows.pop();
+
+const addRow = (tableIndex: number) => {
+  tables.value[tableIndex].rows.push({});
+};
+
+const removeRow = (tableIndex: number) => {
+  if (tables.value[tableIndex].rows.length > 0) {
+    tables.value[tableIndex].rows.pop();
   }
 };
 </script>
@@ -106,45 +179,60 @@ const removeRow = () => {
         />
       </q-card-section>
 
+      <q-card-section class="q-pt-none">
+        <q-select
+          filled
+          v-model="selectedTypeIdName"
+          :options="typeOptions"
+          option-value="value"
+          option-label="label"
+          label="Тип оборудования"
+        />
+        <q-btn flat label="Добавить" @click="addTable" />
+      </q-card-section>
+
       <div class="q-pa-md">
-        <q-toolbar>
-          <q-toolbar-title>
-            {{ table.title }}
-          </q-toolbar-title>
-          <q-space />
-        </q-toolbar>
-        <q-table flat bordered :rows="table.rows" :columns="table.columns">
-          <template v-slot:top>
-            <q-btn color="green" label="Добавить строку" @click="addRow" />
-            <q-btn
-              v-if="table.rows.length !== 0"
-              class="q-ml-sm"
-              color="red"
-              label="Удалить строку"
-              @click="removeRow"
-            />
+        <div v-for="(table, index) in tables" :key="index">
+          <q-toolbar>
+            <q-toolbar-title>
+              {{ table.title }}
+            </q-toolbar-title>
             <q-space />
-          </template>
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td key="code" :props="props">
-                <q-select
-                  filled
-                  v-model="props.row.code"
-                  :options="equipmentOptions"
-                  option-value="value"
-                  option-label="label"
+          </q-toolbar>
+          <q-table
+            flat
+            bordered
+            :rows="table.rows"
+            :columns="table.columns"
+            row-key="id"
+          >
+            <template v-slot:top>
+              <q-btn
+                color="green"
+                label="Добавить строку"
+                @click="addRow(index)"
+              />
+              <q-btn
+                v-if="table.rows.length !== 0"
+                class="q-ml-sm"
+                color="red"
+                label="Удалить строку"
+                @click="removeRow(index)"
+              />
+              <q-space />
+            </template>
+            <template v-slot:body-cell="props">
+              <q-td :props="props">
+                <q-input
+                  v-model.number="props.row[props.col.name]"
+                  input-class="text-left"
+                  dense
+                  borderless
                 />
               </q-td>
-              <q-td key="name" :props="props">
-                <q-input readonly v-model="props.row.name" />
-              </q-td>
-              <q-td key="price" :props="props">
-                <q-input v-model.number="props.row.price" />
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
+            </template>
+          </q-table>
+        </div>
       </div>
 
       <q-card-actions align="right" class="text-primary">

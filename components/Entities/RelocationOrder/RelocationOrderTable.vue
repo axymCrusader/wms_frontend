@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { shippingOrderColumns } from "@/utils/TableColums/ShippingOrderTableColums";
-import { useAcceptОrderStore } from "@/store/AcceptОrderStore";
+import { relocationOrderColumns } from "@/utils/TableColums/RelocationOrderTableColums";
+import { useRelocationOrderStore } from "@/store/RelocationOrderStore";
 import { useShippingOrderStore } from "@/store/ShippingOrderStore";
+
 const shippingOrderStore = useShippingOrderStore();
-const { ShippingOrders } = storeToRefs(shippingOrderStore);
-const acceptOrderStore = useAcceptОrderStore();
+const relocationOrderStore = useRelocationOrderStore();
+const { RelocationOrders } = storeToRefs(relocationOrderStore);
 
 const openDialog = (row) => {
-  shippingOrderStore.setOrderData(row);
-  acceptOrderStore.acceptОrder_AddDialogVisible = true;
+  relocationOrderStore.setOrderData(row);
+  shippingOrderStore.shippingOrderAddDialogVisible = true;
 };
-
 const filter = ref("");
 </script>
 
 <template>
   <q-table
-    title="Заказы на отгрузку"
-    :rows="ShippingOrders"
-    :columns="shippingOrderColumns"
+    title="Заказы на перемещение"
+    :rows="RelocationOrders"
+    :columns="relocationOrderColumns"
     row-key="id"
     flat
     :filter="filter"
@@ -32,7 +32,7 @@ const filter = ref("");
           color="green"
           @click="openDialog(props.row)"
         />
-        <q-btn class="q-ml-sm" label="Просмотр" color="green" />
+        <q-btn class="q-ml-sm" label="Просмотр" color="green" @click="" />
       </q-td>
     </template>
     <template v-slot:top-right>

@@ -17,14 +17,14 @@ export const movementColumns = [
     name: "equipmentCode",
     label: "Номер оборудования",
     align: "left",
-    field: "documentCode",
+    field: "equipmentCode",
     sortable: true,
   },
   {
     name: "equipmentQuantity",
     label: "Кол-во оборудования",
     align: "left",
-    field: "documentQuantity",
+    field: "equipmentQuantity",
     sortable: true,
   },
   {

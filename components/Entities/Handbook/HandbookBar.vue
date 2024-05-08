@@ -8,8 +8,7 @@ const equipmentStore = useEquipmentStore();
     color="white"
     class="q-ml-sm"
     text-color="black"
-    label="Добавить оборудование"
-    @click="equipmentStore.equipmentAddDialogVisible = true"
+    label="Добавить справочник"
+    @click="equipmentStore.handbookAddDialogVisible = true"
   />
-  <q-btn color="white" class="q-ml-sm" text-color="black" label="Фильтр" />
 </template>

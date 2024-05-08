@@ -9,5 +9,11 @@ export const useMovementStore = defineStore("MovementStore", {
   state: (): IState => ({
     Movements: [],
   }),
-  actions: {},
+  actions: {
+    addMovment(movements: IMovement[]) {
+      movements.forEach((movement) => {
+        this.Movements.push(movement);
+      });
+    },
+  },
 });

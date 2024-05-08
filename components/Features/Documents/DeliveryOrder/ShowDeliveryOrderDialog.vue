@@ -2,9 +2,9 @@
 import { useDeliveryOrderStore } from "@/store/DeliveryOrderStore";
 const deliveryOrderStore = useDeliveryOrderStore();
 
-const code = "";
-const status = "";
-const date = "";
+const code = "1471156101";
+const status = "Создано";
+const date = "12.04.2024";
 
 const columns = [
   {
@@ -30,9 +30,16 @@ const columns = [
   },
 ];
 const tableData = [
-  { equipmentNumber: "123", equipmentName: "Оборудование 1", quantity: "10" },
-  { equipmentNumber: "456", equipmentName: "Оборудование 2", quantity: "20" },
-  { equipmentNumber: "789", equipmentName: "Оборудование 3", quantity: "30" },
+  {
+    equipmentNumber: "О1",
+    equipmentName: "Стеллаж_125_56",
+    equipmentQuantity: "2",
+  },
+  {
+    equipmentNumber: "О2",
+    equipmentName: "Полка_12_12",
+    equipmentQuantity: "10",
+  },
 ];
 </script>
 

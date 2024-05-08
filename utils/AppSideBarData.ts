@@ -18,12 +18,12 @@ export const MENU_DATA: MenuItem[] = [
     url: "/EquipmentCharacteristic",
   },
   {
-    name: "Обрудование",
-    url: "/Equipment",
-  },
-  {
     name: "Каталог оборудования",
     url: "/Catalog",
+  },
+  {
+    name: "Справочник оборудования",
+    url: "/Handbook",
   },
   {
     name: "Потребность в оборудовании",
@@ -32,6 +32,10 @@ export const MENU_DATA: MenuItem[] = [
   {
     name: "Заказ на поставку",
     url: "/DeliveryOrder",
+  },
+  {
+    name: "Заказ на перемещение",
+    url: "/RelocationOrder",
   },
   {
     name: "Заказ на приемку",
@@ -47,6 +51,10 @@ export const MENU_DATA: MenuItem[] = [
   },
   {
     name: "Регистр движения",
+    url: "/Movements",
+  },
+  {
+    name: "Отчеты",
     url: "/Movements",
   },
 ];

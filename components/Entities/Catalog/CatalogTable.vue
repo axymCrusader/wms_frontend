@@ -8,6 +8,8 @@ const { Catalogs } = storeToRefs(useCatalogStore());
 const { Equipments } = storeToRefs(useEquipmentStore());
 const { Suppliers } = storeToRefs(useSupplierStore());
 
+const filter = ref("");
+
 const joinedData = computed(() =>
   Catalogs.value.map((catalog) => {
     const equipment = Equipments.value.find(
@@ -32,13 +34,29 @@ const joinedData = computed(() =>
     :rows="joinedData"
     :columns="catalogColumns"
     row-key="catalogId"
+    :filter="filter"
     flat
     sep-rows
   >
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
         <q-btn label="Удалить" color="red" />
+        <q-btn class="q-ml-sm" label="Редактировать" color="green" />
+        <q-btn class="q-ml-sm" label="Просмотр" color="green" />
       </q-td>
+    </template>
+    <template v-slot:top-right>
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="filter"
+        placeholder="Поиск"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
     </template>
   </q-table>
 </template>

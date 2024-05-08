@@ -7,14 +7,28 @@ import type {
 interface IState {
   AcceptОrders: IAcceptОrder[];
   AcceptОrderLines: IAcceptОrderLine[];
-  acceptОrderDialogVisible: boolean;
+  acceptОrderAddDialogVisible: boolean;
+  acceptОrder_AddDialogVisible: boolean;
 }
 
 export const useAcceptОrderStore = defineStore("AcceptОrderStore", {
   state: (): IState => ({
     AcceptОrders: [],
     AcceptОrderLines: [],
-    acceptОrderDialogVisible: false,
+    acceptОrderAddDialogVisible: false,
+    acceptОrder_AddDialogVisible: false,
   }),
-  actions: {},
+  actions: {
+    addAcceptОrder(
+      acceptОrder: IAcceptОrder,
+      acceptОrderLines: IAcceptОrderLine[]
+    ) {
+      this.AcceptОrders.push(acceptОrder);
+
+      acceptОrderLines.forEach((aol) => {
+        this.AcceptОrderLines.push(aol);
+      });
+      this.acceptОrderAddDialogVisible = false;
+    },
+  },
 });

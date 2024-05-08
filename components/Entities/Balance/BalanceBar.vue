@@ -8,7 +8,7 @@ const balanceStore = useBalanceStore();
     color="white"
     class="q-ml-sm"
     text-color="black"
-    label="Оприходывать"
+    label="Оприходовать"
     @click="balanceStore.balanceAddDialogVisible = true"
   />
   <q-btn
@@ -18,5 +18,4 @@ const balanceStore = useBalanceStore();
     label="Списать"
     @click="balanceStore.balanceDeleteDialogVisible = true"
   />
-  <q-btn color="white" class="q-ml-sm" text-color="black" label="Фильтр" />
 </template>

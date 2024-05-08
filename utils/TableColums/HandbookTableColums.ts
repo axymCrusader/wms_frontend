@@ -1,4 +1,4 @@
-export const equipmentColumns = [
+export const handbookTableColums = [
   {
     name: "code",
     label: "Номер",
@@ -8,10 +8,18 @@ export const equipmentColumns = [
   },
   {
     name: "name",
-    label: "Наименование",
+    label: "Наименование оборудования",
     align: "left",
     field: "name",
     sortable: true,
   },
+  {
+    name: "price",
+    label: "Цена оборудования",
+    align: "left",
+    field: "price",
+    sortable: true,
+  },
+
   { name: "actions", label: "Действие", align: "left" },
 ];

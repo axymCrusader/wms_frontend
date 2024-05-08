@@ -1,57 +1,56 @@
 <script setup lang="ts">
 import { balanceColumns } from "@/utils/TableColums/BalanceTableColums";
-const balances = [
-  {
-    balanceId: "--",
-    equipmentName: "--",
-    wareHouseName: "--",
-    equipmentQuantity: "--",
-  },
-];
+import { useEquipmentStore } from "@/store/EquipmentStore";
+import { useWarehouseStore } from "@/store/WareHouseStore";
+import { useBalanceStore } from "@/store/BalanceStore";
+
+const { Balances } = storeToRefs(useBalanceStore());
+const { Equipments } = storeToRefs(useEquipmentStore());
+const { WareHouses } = storeToRefs(useWarehouseStore());
+
+const joinedData = computed(() =>
+  Balances.value.map((balance) => {
+    const equipment = Equipments.value.find(
+      (e) => e.id === balance.equipmentId
+    );
+    const warehouse = WareHouses.value.find(
+      (wh) => wh.id === balance.wareHouseId
+    );
+    return {
+      warehouseName: warehouse?.name,
+      equipmentCode: equipment?.code,
+      equipmentName: equipment?.name,
+      date: balance.date,
+      equipmentQuantity: balance.equipmentQuantity,
+    };
+  })
+);
+const filter = ref("");
 </script>
 
 <template>
   <div class="q-pa-md">
     <q-table
       title="Остатки"
-      :rows="balances"
+      :rows="joinedData"
       :columns="balanceColumns"
-      row-key="name"
+      row-key="id"
+      :filter="filter"
       flat
       sep-rows
     >
-      <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th auto-width />
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
-        </q-tr>
-      </template>
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td auto-width>
-            <q-btn
-              size="sm"
-              color="accent"
-              round
-              dense
-              @click="props.expand = !props.expand"
-              :icon="props.expand ? 'remove' : 'add'"
-            />
-          </q-td>
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.value }}
-          </q-td>
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
-            <div class="text-left">
-              This is expand slot for row above: {{ props.row.name }}.
-            </div>
-          </q-td>
-        </q-tr>
+      <template v-slot:top-right>
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          v-model="filter"
+          placeholder="Поиск"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
       </template>
     </q-table>
   </div>

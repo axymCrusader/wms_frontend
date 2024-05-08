@@ -13,5 +13,12 @@ export const useBalanceStore = defineStore("BalanceStore", {
     balanceAddDialogVisible: false,
     balanceDeleteDialogVisible: false,
   }),
-  actions: {},
+  actions: {
+    addBalance(balances: IBalance[]) {
+      balances.forEach((balance) => {
+        this.Balances.push(balance);
+      });
+      this.balanceAddDialogVisible = false;
+    },
+  },
 });

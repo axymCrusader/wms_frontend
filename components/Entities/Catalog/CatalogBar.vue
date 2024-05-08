@@ -11,5 +11,11 @@ const catalogStore = useCatalogStore();
     label="Добавить каталог"
     @click="catalogStore.catalogAddDialogVisible = true"
   />
-  <q-btn color="white" class="q-ml-sm" text-color="black" label="Фильтр" />
+  <q-btn
+    color="white"
+    class="q-ml-sm"
+    text-color="black"
+    label="Импортировать"
+    @click="catalogStore.catalogImportDialogVisible = true"
+  />
 </template>

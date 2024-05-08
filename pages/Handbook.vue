@@ -1,0 +1,3 @@
+<template>
+  <WidgetsHandbookWidget />
+</template>
